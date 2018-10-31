@@ -28,10 +28,10 @@ main() {
   install_brew
   install_brew_packages
   install_brew_taps
+  create_habitat_token
   install_brew_casks
   start_docker
 	install_xcode
-	# create_habitat_token
 	create_ssh_key
 }
 
@@ -103,4 +103,12 @@ create_ssh_key() {
     echo ""
   fi
 }
+
+create_habitat_token() {
+  if ! grep token $HOME/.hab/etc/cli.toml &> /dev/null
+  then
+    hab cli setup
+  fi
+}
+
 main
