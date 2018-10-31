@@ -20,6 +20,7 @@ brew_casks=(
   atom
   docker
   pycharm-ce
+  slack
 )
 
 main() {
