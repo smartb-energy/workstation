@@ -31,8 +31,8 @@ main() {
   install_brew_casks
   start_docker
 	install_xcode
-	# create_ssh_key
 	# create_habitat_token
+	create_ssh_key
 }
 
 install_xcode_command_line_tools() {
@@ -92,4 +92,15 @@ install_xcode() {
   fi
 }
 
+create_ssh_key() {
+  if ! ls "$HOME/.ssh/id_rsa" &> /dev/null
+  then
+    ssh-keygen -b 4096
+    echo "A new ssh key pair has been generated for you. Copy your public ssh"
+    echo "key to the macOS pasteboard like this:"
+    echo "  cat $HOME/.ssh/id_rsa.pub | pbcopy"
+    echo "You can then paste into your GitHub account, a chat message, etc."
+    echo ""
+  fi
+}
 main
