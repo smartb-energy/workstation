@@ -26,8 +26,8 @@ brew_casks=(
 main() {
   install_xcode_command_line_tools
   install_brew
-  install_brew_packages
   install_brew_taps
+  install_brew_packages
   create_habitat_token
   install_brew_casks
   start_docker
