@@ -8,6 +8,7 @@ brew_packages=(
   hab
   hub
   pyenv
+  rbenv-chefdk
   shellcheck
 )
 
