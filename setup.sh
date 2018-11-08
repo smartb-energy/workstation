@@ -29,11 +29,12 @@ main() {
   install_brew
   install_brew_taps
   install_brew_packages
+  setup_git_duet
   create_habitat_token
   install_brew_casks
   start_docker
-	install_xcode
-	create_ssh_key
+  install_xcode
+  create_ssh_key
 }
 
 install_xcode_command_line_tools() {
@@ -93,6 +94,10 @@ install_xcode() {
   fi
 }
 
+setup_git_duet() {
+  curl --silent https://raw.githubusercontent.com/smartb-energy/workstation/master/.git-authors > $HOME/.git-authors
+}
+
 create_ssh_key() {
   if ! ls "$HOME/.ssh/id_rsa" &> /dev/null
   then
@@ -108,7 +113,9 @@ create_ssh_key() {
 create_habitat_token() {
   if ! grep token $HOME/.hab/etc/cli.toml &> /dev/null
   then
-    hab cli setup
+    echo "Set up your local Habitat environment by running"
+    echo "  hab cli setup"
+    echo ""
   fi
 }
 
