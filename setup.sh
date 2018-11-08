@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x -o errexit -o noglob -o pipefail
+set -o errexit -o noglob -o pipefail
 
 brew_packages=(
   direnv
