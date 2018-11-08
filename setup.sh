@@ -24,6 +24,11 @@ brew_casks=(
   slack
 )
 
+atom_packages=(
+  teletype
+  linter-shellcheck
+)
+
 main() {
   install_xcode_command_line_tools
   install_brew
@@ -32,6 +37,7 @@ main() {
   setup_git_duet
   create_habitat_token
   install_brew_casks
+  install_atom_packages
   start_docker
   install_xcode
   create_ssh_key
@@ -79,10 +85,17 @@ install_brew_casks() {
   done
 }
 
+install_atom_packages() {
+  for package in "${atom_packages[@]}"
+  do
+    apm install "$package"
+  done
+}
+
 start_docker() {
   if ! pgrep Docker &> /dev/null
   then
-    open '/Applications/Docker.app'
+    open "/Applications/Docker.app"
   fi
 }
 
@@ -95,7 +108,7 @@ install_xcode() {
 }
 
 setup_git_duet() {
-  curl --silent https://raw.githubusercontent.com/smartb-energy/workstation/master/.git-authors > $HOME/.git-authors
+  curl --silent "https://raw.githubusercontent.com/smartb-energy/workstation/master/.git-authors" > "$HOME/.git-authors"
 }
 
 create_ssh_key() {
@@ -111,7 +124,7 @@ create_ssh_key() {
 }
 
 create_habitat_token() {
-  if ! grep token $HOME/.hab/etc/cli.toml &> /dev/null
+  if ! grep token "$HOME/.hab/etc/cli.toml" &> /dev/null
   then
     echo "Set up your local Habitat environment by running"
     echo "  hab cli setup"
