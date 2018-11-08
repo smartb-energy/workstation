@@ -81,7 +81,10 @@ install_brew_taps() {
 install_brew_casks() {
   for cask in "${brew_casks[@]}"
   do
-    brew cask install "$cask"
+    if ! brew cask list "$cask" &> /dev/null
+    then
+      brew cask install "$cask"
+    fi
   done
 }
 
