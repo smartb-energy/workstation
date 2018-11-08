@@ -25,8 +25,11 @@ brew_casks=(
 )
 
 atom_packages=(
-  teletype
+  busy-signal
+  intentions
   linter-shellcheck
+  linter-ui-default
+  teletype
 )
 
 main() {
