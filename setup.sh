@@ -38,12 +38,12 @@ main() {
   install_brew_taps
   install_brew_packages
   setup_git_duet
-  create_habitat_token
   install_brew_casks
   install_atom_packages
   start_docker
   install_xcode
   create_ssh_key
+  create_habitat_token
 }
 
 install_xcode_command_line_tools() {
