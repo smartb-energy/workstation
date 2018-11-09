@@ -47,6 +47,7 @@ main() {
   install_atom_packages
   start_docker
   install_xcode
+  install_gems
   create_ssh_key
   create_habitat_token
 }
