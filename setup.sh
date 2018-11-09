@@ -99,7 +99,10 @@ install_brew_casks() {
 install_atom_packages() {
   for package in "${atom_packages[@]}"
   do
-    apm install "$package"
+    if ! apm list | grep "${package}" &> /dev/null
+    then
+      apm install "$package"
+     fi
   done
 }
 
