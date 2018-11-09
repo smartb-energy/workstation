@@ -2,6 +2,10 @@
 
 set -o errexit -o noglob -o pipefail
 
+gems=(
+  inspec
+)
+
 brew_packages=(
   direnv
   git-duet
@@ -112,6 +116,16 @@ install_xcode() {
     echo "Installing Xcode. You will be redirected to the Mac App Store..."
     open -a 'App Store' 'https://itunes.apple.com/us/app/xcode/id497799835'
   fi
+}
+
+install_gems() {
+  for gem in "${gems[@]}"
+  do
+    if ! gem list | grep "${gem}" &> /dev/null
+    then
+      gem install "${gem}"
+    fi
+  done
 }
 
 setup_git_duet() {
