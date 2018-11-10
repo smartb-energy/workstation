@@ -140,7 +140,7 @@ install_gems() {
   do
     if ! gem list | grep "${gem}" &> /dev/null
     then
-      gem install "${gem}"
+      gem install "${gem}" --no-rdoc --no-ri
     fi
   done
 }
