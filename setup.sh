@@ -122,7 +122,13 @@ install_xcode() {
   fi
 }
 
+latest_ruby() {
+  rbenv install --list | awk '{print $1}' | grep "^[0-9].[0-9]" | grep -v "-" | tail -n1
+}
+
 install_gems() {
+  rbenv install --skip-existing $(latest_ruby)
+  rbenv global $(latest_ruby)
   for gem in "${gems[@]}"
   do
     if ! gem list | grep "${gem}" &> /dev/null
