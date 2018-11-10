@@ -129,6 +129,13 @@ latest_ruby() {
 install_gems() {
   rbenv install --skip-existing $(latest_ruby)
   rbenv global $(latest_ruby)
+  
+  if ! grep "rbenv init -" $HOME/.bash_profile &> /dev/null
+  then
+    echo 'eval "$(rbenv init -)"' >> $HOME/.bash_profile
+    source $HOME/.bash_profile
+  fi
+  
   for gem in "${gems[@]}"
   do
     if ! gem list | grep "${gem}" &> /dev/null
