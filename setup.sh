@@ -159,6 +159,12 @@ create_ssh_key() {
     echo "You can then paste into your GitHub account, a chat message, etc."
     echo ""
   fi
+  
+  if ! ssh-add -L | grep ssh-rsa &> /dev/null
+  then
+    ssh-add -L "$HOME/.ssh/id_rsa"
+    echo "Adding the key to the agent"
+  fi
 }
 
 create_habitat_token() {
