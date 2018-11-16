@@ -132,8 +132,8 @@ install_gems() {
   
   if ! grep "rbenv init -" $HOME/.bash_profile &> /dev/null
   then
-    echo 'eval "$(rbenv init -)"' >> $HOME/.bash_profile
-    source $HOME/.bash_profile
+    echo 'eval "$(rbenv init -)"' | tee --append $HOME/.bash_profile
+    eval "$(rbenv init -)"
   fi
   
   for gem in "${gems[@]}"
@@ -164,6 +164,11 @@ create_ssh_key() {
   then
     ssh-add -L "$HOME/.ssh/id_rsa"
     echo "Adding the key to the agent"
+  fi
+  
+  if ! grep "ssh-add -L " $HOME/.bash_profile &> /dev/null
+  then
+    echo 'ssh-add -L "$HOME/.ssh/id_rsa"' | tee --append $HOME/.bash_profile
   fi
 }
 
