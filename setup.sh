@@ -58,6 +58,7 @@ main() {
   install_gems
   create_ssh_key
   create_habitat_token
+  return $?
 }
 
 install_xcode_command_line_tools() {
@@ -68,6 +69,7 @@ install_xcode_command_line_tools() {
     echo "...installation of Xcode command-line tools complete."
     echo ""
   fi
+  return $?
 }
 
 install_brew() {
@@ -86,6 +88,7 @@ install_brew_packages() {
       brew install "$package"
     fi
   done
+  return $?
 }
 
 install_brew_taps() {
@@ -93,6 +96,7 @@ install_brew_taps() {
   do
     brew tap "$tap"
   done
+  return $?
 }
 
 install_brew_casks() {
@@ -103,6 +107,7 @@ install_brew_casks() {
       brew cask install "$cask"
     fi
   done
+  return $?
 }
 
 install_atom_packages() {
@@ -113,6 +118,7 @@ install_atom_packages() {
       apm install "$package"
      fi
   done
+  return $?
 }
 
 install_node_modules() {
@@ -123,6 +129,7 @@ install_node_modules() {
       npm install -g "$module"
      fi
   done
+  return $?
 }
 
 start_docker() {
@@ -130,6 +137,7 @@ start_docker() {
   then
     open "/Applications/Docker.app"
   fi
+  return $?
 }
 
 install_xcode() {
@@ -138,10 +146,12 @@ install_xcode() {
     echo "Installing Xcode. You will be redirected to the Mac App Store..."
     open -a 'App Store' 'https://itunes.apple.com/us/app/xcode/id497799835'
   fi
+  return $?
 }
 
 latest_ruby() {
   rbenv install --list | awk '{print $1}' | grep "^[0-9].[0-9]" | grep -v "-" | tail -n1
+  return $?
 }
 
 install_gems() {
@@ -161,10 +171,12 @@ install_gems() {
       gem install "${gem}" --no-rdoc --no-ri
     fi
   done
+  return $?
 }
 
 setup_git_duet() {
   curl --silent "https://raw.githubusercontent.com/smartb-energy/workstation/master/.git-authors" > "$HOME/.git-authors"
+  return $?
 }
 
 create_ssh_key() {
@@ -188,6 +200,7 @@ create_ssh_key() {
   then
     echo 'ssh-add "$HOME/.ssh/id_rsa"' >> $HOME/.bash_profile
   fi
+  return $?
 }
 
 create_habitat_token() {
@@ -197,6 +210,7 @@ create_habitat_token() {
     echo "  hab cli setup"
     echo ""
   fi
+  return $?
 }
 
 main
