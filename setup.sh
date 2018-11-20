@@ -134,7 +134,7 @@ install_gems() {
   
   if ! grep "rbenv init -" $HOME/.bash_profile &> /dev/null
   then
-    echo 'eval "$(rbenv init -)"' | tee --append $HOME/.bash_profile
+    echo 'eval "$(rbenv init -)"' >> $HOME/.bash_profile
     eval "$(rbenv init -)"
   fi
   
