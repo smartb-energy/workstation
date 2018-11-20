@@ -191,6 +191,8 @@ create_ssh_key() {
     echo ""
   fi
 
+  eval $(ssh-agent)
+
   if ! ssh-add -L | grep ssh-rsa &> /dev/null
   then
     ssh-add -K "$HOME/.ssh/id_rsa"
