@@ -184,3 +184,8 @@ create_habitat_token() {
 }
 
 main
+
+echo ""
+echo "Contribute to this setup script here:"
+echo "  https://github.com/smartb-energy/workstation/blob/master/setup.sh"
+echo ""
