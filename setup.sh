@@ -36,6 +36,7 @@ atom_packages=(
   linter-shellcheck
   linter-ui-default
   teletype
+  remote-ftp
 )
 
 main() {
