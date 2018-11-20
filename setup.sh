@@ -39,6 +39,10 @@ atom_packages=(
   teletype
 )
 
+node_modules=(
+  nuclide
+)
+
 main() {
   install_xcode_command_line_tools
   install_brew
@@ -47,6 +51,7 @@ main() {
   setup_git_duet
   install_brew_casks
   install_atom_packages
+  install_node_modules
   start_docker
   install_xcode
   install_gems
@@ -105,6 +110,16 @@ install_atom_packages() {
     if ! apm list | grep "${package}" &> /dev/null
     then
       apm install "$package"
+     fi
+  done
+}
+
+install_node_modules() {
+  for module in "${node_modules[@]}"
+  do
+    if ! npm list | grep "${module}" &> /dev/null
+    then
+      npm install -g "$module"
      fi
   done
 }
