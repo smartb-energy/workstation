@@ -17,6 +17,7 @@ brew_packages=(
   rbenv-bundler
   rbenv-chefdk
   shellcheck
+  watchman
 )
 
 brew_taps=(
