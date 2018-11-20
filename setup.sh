@@ -16,6 +16,7 @@ brew_packages=(
   rbenv-chefdk
   shellcheck
   nmap
+  npm
 )
 
 brew_taps=(
