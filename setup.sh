@@ -11,12 +11,12 @@ brew_packages=(
   git-duet
   hab
   hub
+  nmap
+  npm
   pyenv
   rbenv-bundler
   rbenv-chefdk
   shellcheck
-  nmap
-  npm
 )
 
 brew_taps=(
@@ -36,6 +36,7 @@ atom_packages=(
   intentions
   linter-shellcheck
   linter-ui-default
+  nuclide
   teletype
 )
 
@@ -146,13 +147,13 @@ latest_ruby() {
 install_gems() {
   rbenv install --skip-existing $(latest_ruby)
   rbenv global $(latest_ruby)
-  
+
   if ! grep "rbenv init -" $HOME/.bash_profile &> /dev/null
   then
     echo 'eval "$(rbenv init -)"' >> $HOME/.bash_profile
     eval "$(rbenv init -)"
   fi
-  
+
   for gem in "${gems[@]}"
   do
     if ! gem list | grep "${gem}" &> /dev/null
@@ -176,13 +177,13 @@ create_ssh_key() {
     echo "You can then paste into your GitHub account, a chat message, etc."
     echo ""
   fi
-  
+
   if ! ssh-add -L | grep ssh-rsa &> /dev/null
   then
     ssh-add "$HOME/.ssh/id_rsa"
     echo "Adding the key to the agent"
   fi
-  
+
   if ! grep "ssh-add -L " $HOME/.bash_profile &> /dev/null
   then
     echo 'ssh-add "$HOME/.ssh/id_rsa"' >> $HOME/.bash_profile
