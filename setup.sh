@@ -193,13 +193,18 @@ create_ssh_key() {
 
   if ! ssh-add -L | grep ssh-rsa &> /dev/null
   then
-    ssh-add "$HOME/.ssh/id_rsa"
+    ssh-add -K "$HOME/.ssh/id_rsa"
     echo "Adding the key to the agent"
   fi
 
-  if ! grep "ssh-add -L " $HOME/.bash_profile &> /dev/null
+  if ! grep "ssh-add -K" $HOME/.bash_profile &> /dev/null
   then
-    echo 'ssh-add "$HOME/.ssh/id_rsa"' >> $HOME/.bash_profile
+    echo 'ssh-add -K "$HOME/.ssh/id_rsa"' >> $HOME/.bash_profile
+  fi
+
+  if ! grep 'eval $(ssh-agent)' $HOME/.bash_profile &> /dev/null
+  then
+    echo 'eval $(ssh-agent)' >> $HOME/.bash_profile
   fi
   return $?
 }
