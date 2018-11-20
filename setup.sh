@@ -170,7 +170,7 @@ create_ssh_key() {
   
   if ! grep "ssh-add -L " $HOME/.bash_profile &> /dev/null
   then
-    echo 'ssh-add "$HOME/.ssh/id_rsa"' | tee --append $HOME/.bash_profile
+    echo 'ssh-add "$HOME/.ssh/id_rsa"' >> $HOME/.bash_profile
   fi
 }
 
