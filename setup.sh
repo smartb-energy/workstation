@@ -41,9 +41,7 @@ atom_packages=(
   teletype
 )
 
-node_modules=(
-  nuclide
-)
+node_modules=()
 
 main() {
   install_xcode_command_line_tools
