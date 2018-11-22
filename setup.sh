@@ -38,7 +38,6 @@ atom_packages=(
   intentions
   linter-shellcheck
   linter-ui-default
-  nuclide
   teletype
 )
 
