@@ -4,6 +4,7 @@ set -o errexit -o noglob -o pipefail
 
 gems=(
   inspec
+  bundler
 )
 
 brew_packages=(
