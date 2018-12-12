@@ -31,6 +31,7 @@ brew_casks=(
   docker
   pycharm-ce
   slack
+  visual-studio-code
 )
 
 atom_packages=(
