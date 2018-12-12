@@ -50,6 +50,7 @@ main() {
   install_brew_taps
   install_brew_packages
   setup_git_duet
+  setup_git_aliases
   install_brew_casks
   install_atom_packages
   install_node_modules
@@ -177,6 +178,13 @@ install_gems() {
 setup_git_duet() {
   curl --silent "https://raw.githubusercontent.com/smartb-energy/workstation/master/.git-authors" > "$HOME/.git-authors"
   return $?
+}
+
+setup_git_aliases() {
+  git config --global alias.co checkout
+  git config --global alias.br branch
+  git config --global alias.ci commit
+  git config --global alias.st status
 }
 
 create_ssh_key() {
