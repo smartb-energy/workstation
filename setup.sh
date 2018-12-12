@@ -20,6 +20,7 @@ brew_packages=(
   shellcheck
   watchman
   terraform
+  awscli
 )
 
 brew_taps=(
