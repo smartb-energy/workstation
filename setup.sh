@@ -19,6 +19,7 @@ brew_packages=(
   rbenv-chefdk
   shellcheck
   watchman
+  terraform
 )
 
 brew_taps=(
