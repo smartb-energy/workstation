@@ -171,7 +171,7 @@ install_gems() {
   do
     if ! gem list | grep "${gem}" &> /dev/null
     then
-      gem install "${gem}" --no-rdoc --no-ri
+      gem install "${gem}" --no-document
     fi
   done
   return $?
