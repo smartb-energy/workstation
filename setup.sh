@@ -31,6 +31,7 @@ brew_taps=(
 brew_casks=(
   atom
   docker
+  postman
   pycharm-ce
   slack
   visual-studio-code
