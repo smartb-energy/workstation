@@ -31,9 +31,11 @@ brew_taps=(
 brew_casks=(
   atom
   docker
+  iterm2
   postman
   pycharm-ce
   slack
+  spectacle
   visual-studio-code
 )
 
