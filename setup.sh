@@ -8,6 +8,7 @@ gems=(
 )
 
 brew_packages=(
+  awscli
   direnv
   git-duet
   hab
@@ -15,12 +16,13 @@ brew_packages=(
   nmap
   npm
   pyenv
+  pyenv-virtualenv
+  pyenv-virtualenvwrapper
   rbenv-bundler
   rbenv-chefdk
   shellcheck
   watchman
   terraform
-  awscli
 )
 
 brew_taps=(
@@ -232,6 +234,15 @@ create_habitat_token() {
     echo "Set up your local Habitat environment by running"
     echo "  hab cli setup"
     echo ""
+  fi
+  return $?
+}
+
+configure_pyenv() {
+  if ! grep "pyenv init -" $HOME/.bash_profile &> /dev/null
+  then
+    echo 'eval "$(pyenv init -)"' >> $HOME/.bash_profile
+    eval "$(pyenv init -)"
   fi
   return $?
 }
