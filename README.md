@@ -10,6 +10,6 @@ Alternatively, you can create a shell function to make it easier to perform an s
 echo '
 setup () 
 { 
-    curl --silent https://raw.githubusercontent.com/smartb-energy/workstation/master/setup.sh | bash
+    curl --silent "https://raw.githubusercontent.com/smartb-energy/workstation/master/setup.sh?a=$(date +%s)" | bash
 }' >> ~/.bash_profile
 ```
