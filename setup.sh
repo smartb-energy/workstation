@@ -241,8 +241,10 @@ create_habitat_token() {
 configure_pyenv() {
   if ! grep "pyenv init -" $HOME/.bash_profile &> /dev/null
   then
-    echo 'eval "$(pyenv init -)"' >> $HOME/.bash_profile
+    echo 'eval "$(pyenv init -)"
+ pyenv virtualenvwrapper_lazy' >> $HOME/.bash_profile
     eval "$(pyenv init -)"
+    pyenv virtualenvwrapper_lazy
   fi
   return $?
 }
