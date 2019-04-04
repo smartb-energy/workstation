@@ -157,6 +157,8 @@ install_xcode() {
   then
     echo "Installing Xcode. You will be redirected to the Mac App Store..."
     open -a 'App Store' 'https://itunes.apple.com/us/app/xcode/id497799835'
+    echo "Installing macOS development headers..."
+    installer -pkg '/Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg' -target /
   fi
   return $?
 }
