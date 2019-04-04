@@ -20,9 +20,11 @@ brew_packages=(
   pyenv-virtualenvwrapper
   rbenv-bundler
   rbenv-chefdk
+  readline
   shellcheck
   watchman
   terraform
+  xz
 )
 
 brew_taps=(
