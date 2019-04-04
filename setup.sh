@@ -93,7 +93,8 @@ install_brew_packages() {
   do
     if ! type "$package" &> /dev/null
     then
-      brew install "$package"
+      brew install "$package" || true
+      brew upgrade "$package" || true
     fi
   done
   return $?
