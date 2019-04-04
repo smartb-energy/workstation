@@ -66,6 +66,7 @@ main() {
   install_gems
   create_ssh_key
   create_habitat_token
+  configure_pyenv
   return $?
 }
 
