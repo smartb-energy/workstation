@@ -16,11 +16,15 @@ brew_packages=(
   nmap
   npm
   pyenv
+  pyenv-virtualenv
+  pyenv-virtualenvwrapper
   rbenv-bundler
   rbenv-chefdk
+  readline
   shellcheck
   terraform
   watchman
+  xz
 )
 
 brew_taps=(
@@ -31,8 +35,11 @@ brew_taps=(
 brew_casks=(
   atom
   docker
+  iterm2
+  postman
   pycharm-ce
   slack
+  spectacle
   visual-studio-code
 )
 
@@ -63,6 +70,7 @@ main() {
   install_gems
   create_ssh_key
   create_habitat_token
+  configure_pyenv
   return $?
 }
 
@@ -138,6 +146,8 @@ install_xcode() {
   then
     echo "Installing Xcode. You will be redirected to the Mac App Store..."
     open -a 'App Store' 'https://itunes.apple.com/us/app/xcode/id497799835'
+    echo "Installing macOS development headers..."
+    installer -pkg '/Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg' -target /
   fi
   return $?
 }
@@ -219,6 +229,19 @@ create_habitat_token() {
     echo "Set up your local Habitat environment by running"
     echo "  hab cli setup"
     echo ""
+  fi
+  return $?
+}
+
+configure_pyenv() {
+  if ! grep "pyenv init -" $HOME/.bash_profile &> /dev/null
+  then
+    echo '
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+' >> $HOME/.bash_profile
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
   fi
   return $?
 }
