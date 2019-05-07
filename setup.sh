@@ -88,10 +88,7 @@ install_brew() {
 install_brew_packages() {
   for package in "${brew_packages[@]}"
   do
-    if ! type "$package" &> /dev/null
-    then
-      brew install "$package"
-    fi
+    brew upgrade "$package" || brew install "$package"
   done
   return $?
 }
@@ -107,10 +104,7 @@ install_brew_taps() {
 install_brew_casks() {
   for cask in "${brew_casks[@]}"
   do
-    if ! brew cask list "$cask" &> /dev/null
-    then
-      brew cask install "$cask"
-    fi
+    brew cask upgrade "$cask" || brew cask install "$cask"
   done
   return $?
 }
@@ -118,10 +112,7 @@ install_brew_casks() {
 install_atom_packages() {
   for package in "${atom_packages[@]}"
   do
-    if ! apm list | grep "${package}" &> /dev/null
-    then
-      apm install "$package"
-     fi
+    apm update "$package" || apm install "$package"
   done
   return $?
 }
@@ -129,10 +120,7 @@ install_atom_packages() {
 install_node_modules() {
   for module in "${node_modules[@]}"
   do
-    if ! npm list | grep "${module}" &> /dev/null
-    then
-      npm install -g "$module"
-     fi
+    npm update -g "$module" || npm install -g "$module"
   done
   return $?
 }
