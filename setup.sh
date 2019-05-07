@@ -23,6 +23,7 @@ brew_packages=(
   readline
   shellcheck
   terraform
+  vault
   watchman
   xz
 )
