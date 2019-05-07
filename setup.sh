@@ -44,7 +44,9 @@ atom_packages=(
   teletype
 )
 
-node_modules=()
+node_modules=(
+  triton
+)
 
 main() {
   install_xcode_command_line_tools
