@@ -8,6 +8,7 @@ gems=(
 )
 
 brew_packages=(
+  awscli
   direnv
   git-duet
   hab
@@ -18,9 +19,8 @@ brew_packages=(
   rbenv-bundler
   rbenv-chefdk
   shellcheck
-  watchman
   terraform
-  awscli
+  watchman
 )
 
 brew_taps=(
