@@ -41,7 +41,7 @@ brew_casks=(
   pycharm-ce
   slack
   spectacle
-  visual-studio-code
+  vscodium
 )
 
 atom_packages=(
