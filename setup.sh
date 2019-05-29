@@ -22,7 +22,7 @@ brew_packages=(
   rbenv-chefdk
   readline
   shellcheck
-  terraform
+  terraform@0.11
   vault
   watchman
   xz
