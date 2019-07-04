@@ -173,6 +173,7 @@ install_gems() {
       gem install "${gem}" --no-document
     fi
   done
+  rbenv rehash
   return $?
 }
 
