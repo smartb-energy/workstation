@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -o errexit -o noglob -o pipefail
-
 gems=(
   inspec
   bundler
