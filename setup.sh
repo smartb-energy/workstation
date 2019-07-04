@@ -35,6 +35,7 @@ brew_taps=(
 
 brew_casks=(
   atom
+  chef/chef/inspec
   docker
   iterm2
   postman
