@@ -1,7 +1,7 @@
 #!/bin/bash
 
 gems=(
-  inspec
+  inspec-bin
   bundler
 )
 
@@ -33,7 +33,6 @@ brew_taps=(
 
 brew_casks=(
   atom
-  chef/chef/inspec
   docker
   iterm2
   postman
