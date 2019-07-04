@@ -3,7 +3,7 @@ This project is an effort to streamline installing commonly-used development too
 
 ### Set Up Your macOS Laptop or Desktop
 ```
-curl --silent https://raw.githubusercontent.com/smartb-energy/workstation/master/setup.sh?a=$(date +%s) |  bash
+curl --silent "https://raw.githubusercontent.com/smartb-energy/workstation/master/setup.sh?a=$(date +%s)" |  bash
 ```
 Alternatively, you can create a shell function to make it easier to perform an setup update any time you want:
 ```
