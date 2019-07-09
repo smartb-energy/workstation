@@ -205,7 +205,12 @@ create_ssh_key() {
 
   if ! grep 'eval $(ssh-agent)' $HOME/.bash_profile &> /dev/null
   then
-    echo 'eval $(ssh-agent)' >> $HOME/.bash_profile
+    echo '
+if ! pgrep "ssh-agent" &> "/dev/null"
+then
+  eval $(ssh-agent)
+fi
+' >> $HOME/.bash_profile
     source $HOME/.bash_profile
   fi
 
