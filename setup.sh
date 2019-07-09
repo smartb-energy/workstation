@@ -11,6 +11,7 @@ brew_packages=(
   git-duet
   hab
   hub
+  jq
   nmap
   npm
   pyenv
