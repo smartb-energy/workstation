@@ -17,11 +17,11 @@ brew_packages=(
   pyenv
   pyenv-virtualenv
   pyenv-virtualenvwrapper
+  rbenv
   rbenv-bundler
-  rbenv-chefdk
   readline
   shellcheck
-  terraform@0.11
+  terraform
   vault
   watchman
   xz
@@ -51,20 +51,14 @@ atom_packages=(
   teletype
 )
 
-node_modules=(
-  triton
-)
-
 main() {
-  install_xcode_command_line_tools
-  install_brew
-  install_brew_taps
-  install_brew_packages
-  install_brew_casks
-  # setup_git_duet
+  # install_xcode_command_line_tools
+  # install_brew
+  # install_brew_taps
+  # install_brew_packages
+  # install_brew_casks
+  setup_git_duet
   # setup_git_aliases
-  # install_atom_packages
-  # install_node_modules
   # start_docker
   # install_xcode
   # install_gems
@@ -83,6 +77,7 @@ is_ubuntu() {
   fi 
 }
 
+
 is_macos() {
   if uname -rv | grep "Darwin" &> "/dev/null"
   then
@@ -92,109 +87,70 @@ is_macos() {
   fi
 }
 
+
 install_xcode_command_line_tools() {
-  if [ $(is_ubuntu)==0 ]
+  if is_macos
   then
-    echo "Skipping Xcode command-line tools - just for macOS."
-    return
-  elif [ $(is_macos)==0]
-  then
-    if ! xcode-select --print-path &> /dev/null
+    if ! xcode-select --print-path &> "/dev/null"
     then
       echo "Installing Xcode command-line tools..."
       xcode-select --install
       echo "...installation of Xcode command-line tools complete."
       echo ""
     fi
-    return $?
-  else
-    return
   fi
 }
+
 
 install_brew() {
-  if [ $(is_ubuntu)==0 ]
+  if ! type "brew" &> "/dev/null"
   then
-    echo "Skipping Brew - just for macOS."
-    return
-  elif [ $(is_macos)==0]
-  then
-    if ! type "brew" &> /dev/null
+    if is_ubuntu
     then
+      sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+      return $?
+    elif is_macos
+    then  
       /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+      return $?
     fi
-    return $?
-  else 
-    return
   fi
 }
 
-install_brew_packages() {\
-  if [ $(is_ubuntu)==0 ]
+
+install_brew_packages() {
+  if is_macos || is_ubuntu
   then
-    echo "Skipping Brew Packages - just for macOS."
-    return
-  elif [ $(is_macos)==0]
-  then
-    for package in "${brew_packages[@]}"
-    do
-      brew upgrade "$package" || brew install "$package"
-    done
-    return $?
-  else
-    return
+    brew install $(echo "${brew_packages[*]}") || true
+    brew upgrade $(brew ls) || true
   fi
 }
+
 
 install_brew_taps() {
-  if [ $(is_ubuntu)==0 ]
-  then
-    echo "Skipping Brew Taps - just for macOS."
-    return
-  elif [ $(is_macos)==0]
+  if is_macos || is_ubuntu
   then
     for tap in "${brew_taps[@]}"
     do
       brew tap "$tap"
     done
     return $?
-  else
-    return
   fi
 }
+
 
 install_brew_casks() {
-  if [ $(is_ubuntu)==0 ]
+  if is_ubuntu
   then
-    echo "Skipping Brew Casks - just for macOS."
-    return
-  elif [ $(is_macos)==0]
+    brew install $(echo "${brew_casks[*]}") || true
+    brew upgrade $(brew ls) || true
+  elif is_macos
   then
-    for cask in "${brew_casks[@]}"
-    do
-      brew cask upgrade "$cask" || brew cask install "$cask"
-    done
-    return $?
-  else
-    return
+    brew cask install $(echo "${brew_casks[*]}") || true
+    brew cask upgrade $(brew cask ls) || true
   fi
 }
 
-install_atom_packages() {
-  for package in "${atom_packages[@]}"
-  do
-    apm update "$package" || apm install "$package"
-  done
-  return $?
-}
-
-install_node_modules() {
-  for module in "${node_modules[@]}"
-  do
-    npm update -g "$module" || npm install -g "$module"
-  done
-  return $?
-}
 
 start_docker() {
   if ! pgrep Docker &> /dev/null
@@ -204,27 +160,33 @@ start_docker() {
   return $?
 }
 
+
 install_xcode() {
-  if ! ls '/Applications/Xcode.app/' &> /dev/null
+  if is_macos
   then
-    echo "Installing Xcode. You will be redirected to the Mac App Store..."
-    open -a 'App Store' 'https://itunes.apple.com/us/app/xcode/id497799835'
-    echo "Installing macOS development headers..."
-    installer -pkg '/Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg' -target /
+    if ! ls '/Applications/Xcode.app/' &> /dev/null
+    then
+      echo "Installing Xcode. You will be redirected to the Mac App Store..."
+      open -a 'App Store' 'https://itunes.apple.com/us/app/xcode/id497799835'
+      echo "Installing macOS development headers..."
+      installer -pkg '/Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg' -target /
+    fi
+    return $?
   fi
-  return $?
 }
+
 
 latest_ruby() {
   rbenv install --list | awk '{print $1}' | grep "^[0-9].[0-9]" | grep -v "-" | tail -n1
   return $?
 }
 
+
 install_gems() {
   rbenv install --skip-existing $(latest_ruby)
   rbenv global $(latest_ruby)
 
-  if ! grep "rbenv init -" $HOME/.bash_profile &> /dev/null
+  if ! grep "rbenv init -" $HOME/.bash_profile &> "/dev/null"
   then
     echo 'eval "$(rbenv init -)"' >> $HOME/.bash_profile
     eval "$(rbenv init -)"
@@ -232,7 +194,7 @@ install_gems() {
 
   for gem in "${gems[@]}"
   do
-    if ! gem list | grep "${gem}" &> /dev/null
+    if ! gem list | grep "${gem}" &> "/dev/null"
     then
       gem install "${gem}" --no-document
     fi
@@ -241,10 +203,12 @@ install_gems() {
   return $?
 }
 
+
 setup_git_duet() {
   curl --silent "https://raw.githubusercontent.com/smartb-energy/workstation/master/.git-authors" > "$HOME/.git-authors"
   return $?
 }
+
 
 setup_git_aliases() {
   git config --global alias.co checkout
@@ -252,6 +216,7 @@ setup_git_aliases() {
   git config --global alias.ci commit
   git config --global alias.st status
 }
+
 
 create_ssh_key() {
   if ! ls "$HOME/.ssh/id_rsa" &> /dev/null
@@ -292,6 +257,7 @@ fi
   return $?
 }
 
+
 create_habitat_token() {
   if ! grep token "$HOME/.hab/etc/cli.toml" &> /dev/null
   then
@@ -302,13 +268,14 @@ create_habitat_token() {
   return $?
 }
 
+
 configure_pyenv() {
   if ! grep "pyenv init -" $HOME/.bash_profile &> /dev/null
   then
     echo '
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
-' >> $HOME/.bash_profile
+' >> "$HOME/.bash_profile"
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
   fi
