@@ -124,6 +124,7 @@ install_brew_packages() {
   if is_macos || is_ubuntu
   then
     brew install $(echo "${brew_packages[*]}") || true
+    brew install $(echo "${brew_packages_linux[*]}") || true
     brew upgrade $(brew ls) || true
   fi
 }
@@ -142,11 +143,7 @@ install_brew_taps() {
 
 
 install_brew_casks() {
-  if is_ubuntu
-  then
-    brew install $(echo "${brew_casks[*]}") || true
-    brew upgrade $(brew ls) || true
-  elif is_macos
+  if is_macos
   then
     brew cask install $(echo "${brew_casks[*]}") || true
     brew cask upgrade $(brew cask ls) || true
