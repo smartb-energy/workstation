@@ -8,6 +8,7 @@ gems=(
 brew_packages=(
   awscli
   direnv
+  gcc
   git-duet
   hab
   hub
@@ -52,16 +53,17 @@ atom_packages=(
 )
 
 main() {
-  # install_xcode_command_line_tools
-  # install_brew
-  # install_brew_taps
-  # install_brew_packages
-  # install_brew_casks
+  install_xcode_command_line_tools
+  install_brew
+  configure_linux_brew
+  install_brew_taps
+  install_brew_packages
+  install_brew_casks
   setup_git_duet
-  # setup_git_aliases
-  # start_docker
-  # install_xcode
-  # install_gems
+  setup_git_aliases
+  start_docker
+  install_xcode
+  install_gems
   # create_ssh_key
   # create_habitat_token
   # configure_pyenv
@@ -153,9 +155,12 @@ install_brew_casks() {
 
 
 start_docker() {
-  if ! pgrep Docker &> /dev/null
+  if is_macos
   then
-    open "/Applications/Docker.app"
+    if ! pgrep Docker &> /dev/null
+    then
+      open "/Applications/Docker.app"
+    fi
   fi
   return $?
 }
@@ -205,7 +210,10 @@ install_gems() {
 
 
 setup_git_duet() {
-  curl --silent "https://raw.githubusercontent.com/smartb-energy/workstation/master/.git-authors" > "$HOME/.git-authors"
+  curl \
+    --silent \
+    "https://raw.githubusercontent.com/smartb-energy/workstation/master/.git-authors?a=$(date +%s)" \
+    > "$HOME/.git-authors"
   return $?
 }
 
@@ -215,6 +223,7 @@ setup_git_aliases() {
   git config --global alias.br branch
   git config --global alias.ci commit
   git config --global alias.st status
+  return $?
 }
 
 
@@ -270,7 +279,7 @@ create_habitat_token() {
 
 
 configure_pyenv() {
-  if ! grep "pyenv init -" $HOME/.bash_profile &> /dev/null
+  if ! grep "pyenv init -" "$HOME/.bash_profile" &> "/dev/null"
   then
     echo '
 eval "$(pyenv init -)"
@@ -278,6 +287,30 @@ eval "$(pyenv virtualenv-init -)"
 ' >> "$HOME/.bash_profile"
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
+  fi
+  return $?
+}
+
+configure_linux_brew() {
+  if is_ubuntu
+  then
+    sudo apt-get install "build-essential"
+
+    if ! grep "/home/linuxbrew/.linuxbrew/bin/brew" "$HOME/.bash_profile" &> "/dev/null"
+    then
+      echo '
+  eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+  ' >> "$HOME/.bash_profile"
+      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    fi
+
+    if ! grep "/home/linuxbrew/.linuxbrew/bin/brew" "$HOME/.bash_profile" | grep "PATH=" &> "/dev/null"
+    then
+      echo '
+  PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+  ' >> "$HOME/.bash_profile"
+      export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+    fi
   fi
   return $?
 }
