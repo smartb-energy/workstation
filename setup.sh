@@ -161,6 +161,10 @@ start_docker() {
     then
       open "/Applications/Docker.app"
     fi
+  elif is_ubuntu
+  then
+    sudo apt update
+    sudo apt install docker.io
   fi
   return $?
 }
