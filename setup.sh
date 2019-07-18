@@ -272,7 +272,7 @@ fi
 
 
 create_habitat_token() {
-  if ! grep token "$HOME/.hab/etc/cli.toml" &> /dev/null
+  if ! grep token "$HOME/.hab/etc/cli.toml" &> "/dev/null"
   then
     echo "Set up your local Habitat environment by running"
     echo "  hab cli setup"
