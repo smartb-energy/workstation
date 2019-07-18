@@ -60,61 +60,124 @@ main() {
   install_brew
   install_brew_taps
   install_brew_packages
-  setup_git_duet
-  setup_git_aliases
   install_brew_casks
-  install_atom_packages
-  install_node_modules
-  start_docker
-  install_xcode
-  install_gems
-  create_ssh_key
-  create_habitat_token
-  configure_pyenv
+  # setup_git_duet
+  # setup_git_aliases
+  # install_atom_packages
+  # install_node_modules
+  # start_docker
+  # install_xcode
+  # install_gems
+  # create_ssh_key
+  # create_habitat_token
+  # configure_pyenv
   return $?
+}
+
+is_ubuntu() {
+  if uname -rv | grep "Ubuntu" &> "/dev/null"
+  then
+    return 0
+  else
+    return 1
+  fi 
+}
+
+is_macos() {
+  if uname -rv | grep "Darwin" &> "/dev/null"
+  then
+    return 0
+  else
+    return 1
+  fi
 }
 
 install_xcode_command_line_tools() {
-  if ! xcode-select --print-path &> /dev/null
+  if [ $(is_ubuntu)==0 ]
   then
-    echo "Installing Xcode command-line tools..."
-    xcode-select --install
-    echo "...installation of Xcode command-line tools complete."
-    echo ""
+    echo "Skipping Xcode command-line tools - just for macOS."
+    return
+  elif [ $(is_macos)==0]
+  then
+    if ! xcode-select --print-path &> /dev/null
+    then
+      echo "Installing Xcode command-line tools..."
+      xcode-select --install
+      echo "...installation of Xcode command-line tools complete."
+      echo ""
+    fi
+    return $?
+  else
+    return
   fi
-  return $?
 }
 
 install_brew() {
-  if ! type "brew" &> /dev/null
+  if [ $(is_ubuntu)==0 ]
   then
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    echo "Skipping Brew - just for macOS."
+    return
+  elif [ $(is_macos)==0]
+  then
+    if ! type "brew" &> /dev/null
+    then
+      /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    fi
+    return $?
+  else 
+    return
   fi
-  return $?
 }
 
-install_brew_packages() {
-  for package in "${brew_packages[@]}"
-  do
-    brew upgrade "$package" || brew install "$package"
-  done
-  return $?
+install_brew_packages() {\
+  if [ $(is_ubuntu)==0 ]
+  then
+    echo "Skipping Brew Packages - just for macOS."
+    return
+  elif [ $(is_macos)==0]
+  then
+    for package in "${brew_packages[@]}"
+    do
+      brew upgrade "$package" || brew install "$package"
+    done
+    return $?
+  else
+    return
+  fi
 }
 
 install_brew_taps() {
-  for tap in "${brew_taps[@]}"
-  do
-    brew tap "$tap"
-  done
-  return $?
+  if [ $(is_ubuntu)==0 ]
+  then
+    echo "Skipping Brew Taps - just for macOS."
+    return
+  elif [ $(is_macos)==0]
+  then
+    for tap in "${brew_taps[@]}"
+    do
+      brew tap "$tap"
+    done
+    return $?
+  else
+    return
+  fi
 }
 
 install_brew_casks() {
-  for cask in "${brew_casks[@]}"
-  do
-    brew cask upgrade "$cask" || brew cask install "$cask"
-  done
-  return $?
+  if [ $(is_ubuntu)==0 ]
+  then
+    echo "Skipping Brew Casks - just for macOS."
+    return
+  elif [ $(is_macos)==0]
+  then
+    for cask in "${brew_casks[@]}"
+    do
+      brew cask upgrade "$cask" || brew cask install "$cask"
+    done
+    return $?
+  else
+    return
+  fi
 }
 
 install_atom_packages() {
