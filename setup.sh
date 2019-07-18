@@ -28,6 +28,10 @@ brew_packages=(
   xz
 )
 
+brew_packages_linux=(
+  docker
+)
+
 brew_taps=(
   git-duet/tap
   habitat-sh/habitat
