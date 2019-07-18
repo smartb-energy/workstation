@@ -68,6 +68,7 @@ main() {
   start_docker
   install_xcode
   install_gems
+  install_kubectl
   # create_ssh_key
   # create_habitat_token
   # configure_pyenv
@@ -304,19 +305,34 @@ configure_linux_brew() {
     if ! grep "/home/linuxbrew/.linuxbrew/bin/brew" "$HOME/.bash_profile" &> "/dev/null"
     then
       echo '
-  eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
-  ' >> "$HOME/.bash_profile"
+eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+' >> "$HOME/.bash_profile"
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     fi
 
     if ! grep "/home/linuxbrew/.linuxbrew/bin/brew" "$HOME/.bash_profile" | grep "PATH=" &> "/dev/null"
     then
       echo '
-  PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-  ' >> "$HOME/.bash_profile"
+PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+' >> "$HOME/.bash_profile"
       export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
     fi
   fi
+  return $?
+}
+
+install_kubectl() {
+  if is_ubuntu
+  then
+    local kernel="linux"
+  elif is_macos
+  then
+    local kernel="darwin"
+  fi
+
+  curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/$kernel/amd64/kubectl"
+  echo "Installing kubectl:"
+  sudo install -m 755 "kubectl" "/bin/kubectl"
   return $?
 }
 
