@@ -338,9 +338,12 @@ install_kubectl() {
     local kernel="darwin"
   fi
 
+  if ! type kubectl &> "/dev/null"
+  then
   curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/$kernel/amd64/kubectl"
   echo "Installing kubectl:"
-  sudo install -m 755 "kubectl" "/bin/kubectl"
+    sudo install -m 755 "kubectl" "/usr/local/bin/kubectl"
+  fi
   return $?
 }
 
