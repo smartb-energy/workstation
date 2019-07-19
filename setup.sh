@@ -178,14 +178,19 @@ start_docker() {
 install_xcode() {
   if is_macos
   then
-    if ! ls '/Applications/Xcode.app/' &> /dev/null
+    if ! ls "/Applications/Xcode.app/" &> "/dev/null"
     then
-      echo "Installing Xcode. You will be redirected to the Mac App Store..."
-      open -a 'App Store' 'https://itunes.apple.com/us/app/xcode/id497799835'
+      echo "You must first install Xcode. You will be redirected to the Mac App Store..."
+      open -a "App Store" "https://itunes.apple.com/us/app/xcode/id497799835"
+      exit 1
+
+      if sw_vers | grep "ProductVersion" | grep "10.14" &> "/dev/null"
+      then
       echo "Installing macOS development headers..."
-      installer -pkg '/Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg' -target /
+        local headers_pkg="/Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg"
+        installer -pkg "$headers_pkg" -target "/"
+      fi
     fi
-    return $?
   fi
 }
 
