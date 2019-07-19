@@ -105,6 +105,9 @@ install_xcode_command_line_tools() {
       echo "...installation of Xcode command-line tools complete."
       echo ""
     fi
+
+    sudo xcodebuild -license accept
+    return $?
   fi
 }
 
