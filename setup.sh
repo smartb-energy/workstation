@@ -8,6 +8,7 @@ gems=(
 brew_packages=(
   awscli
   direnv
+  gcc
   git-duet
   hab
   hub
@@ -17,14 +18,18 @@ brew_packages=(
   pyenv
   pyenv-virtualenv
   pyenv-virtualenvwrapper
+  rbenv
   rbenv-bundler
-  rbenv-chefdk
   readline
   shellcheck
-  terraform@0.11
+  terraform
   vault
   watchman
   xz
+)
+
+brew_packages_linux=(
+  docker
 )
 
 brew_taps=(
@@ -51,117 +56,156 @@ atom_packages=(
   teletype
 )
 
-node_modules=(
-  triton
-)
-
 main() {
   install_xcode_command_line_tools
   install_brew
+  configure_linux_brew
   install_brew_taps
   install_brew_packages
+  install_brew_casks
   setup_git_duet
   setup_git_aliases
-  install_brew_casks
-  install_atom_packages
-  install_node_modules
   start_docker
   install_xcode
   install_gems
-  create_ssh_key
-  create_habitat_token
-  configure_pyenv
+  install_kubectl
+  # create_ssh_key
+  # create_habitat_token
+  # configure_pyenv
   return $?
 }
+
+is_ubuntu() {
+  if uname -rv | grep "Ubuntu" &> "/dev/null"
+  then
+    return 0
+  else
+    return 1
+  fi 
+}
+
+
+is_macos() {
+  if uname -rv | grep "Darwin" &> "/dev/null"
+  then
+    return 0
+  else
+    return 1
+  fi
+}
+
 
 install_xcode_command_line_tools() {
-  if ! xcode-select --print-path &> /dev/null
+  if is_macos
   then
-    echo "Installing Xcode command-line tools..."
-    xcode-select --install
-    echo "...installation of Xcode command-line tools complete."
-    echo ""
+    if ! xcode-select --print-path &> "/dev/null"
+    then
+      echo "Installing Xcode command-line tools..."
+      xcode-select --install
+      echo "...installation of Xcode command-line tools complete."
+      echo ""
+    fi
+
+    sudo xcodebuild -license accept
+    return $?
   fi
-  return $?
 }
+
 
 install_brew() {
-  if ! type "brew" &> /dev/null
+  if ! type "brew" &> "/dev/null"
   then
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    if is_ubuntu
+    then
+      sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+      return $?
+    elif is_macos
+    then  
+      /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+      return $?
+    fi
   fi
-  return $?
 }
+
 
 install_brew_packages() {
-  for package in "${brew_packages[@]}"
-  do
-    brew upgrade "$package" || brew install "$package"
-  done
-  return $?
+  if is_macos || is_ubuntu
+  then
+    brew install $(echo "${brew_packages[*]}") || true
+    brew install $(echo "${brew_packages_linux[*]}") || true
+    brew upgrade $(brew ls) || true
+  fi
 }
+
 
 install_brew_taps() {
-  for tap in "${brew_taps[@]}"
-  do
-    brew tap "$tap"
-  done
-  return $?
+  if is_macos || is_ubuntu
+  then
+    for tap in "${brew_taps[@]}"
+    do
+      brew tap "$tap"
+    done
+    return $?
+  fi
 }
+
 
 install_brew_casks() {
-  for cask in "${brew_casks[@]}"
-  do
-    brew cask upgrade "$cask" || brew cask install "$cask"
-  done
-  return $?
+  if is_macos
+  then
+    brew cask install $(echo "${brew_casks[*]}") || true
+    brew cask upgrade $(brew cask ls) || true
+  fi
 }
 
-install_atom_packages() {
-  for package in "${atom_packages[@]}"
-  do
-    apm update "$package" || apm install "$package"
-  done
-  return $?
-}
-
-install_node_modules() {
-  for module in "${node_modules[@]}"
-  do
-    npm update -g "$module" || npm install -g "$module"
-  done
-  return $?
-}
 
 start_docker() {
-  if ! pgrep Docker &> /dev/null
+  if is_macos
   then
-    open "/Applications/Docker.app"
+    if ! pgrep Docker &> /dev/null
+    then
+      open "/Applications/Docker.app"
+    fi
+  elif is_ubuntu
+  then
+    sudo apt update
+    sudo apt install docker.io
   fi
   return $?
 }
 
+
 install_xcode() {
-  if ! ls '/Applications/Xcode.app/' &> /dev/null
+  if is_macos
   then
-    echo "Installing Xcode. You will be redirected to the Mac App Store..."
-    open -a 'App Store' 'https://itunes.apple.com/us/app/xcode/id497799835'
-    echo "Installing macOS development headers..."
-    installer -pkg '/Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg' -target /
+    if ! ls "/Applications/Xcode.app/" &> "/dev/null"
+    then
+      echo "You must first install Xcode. You will be redirected to the Mac App Store..."
+      open -a "App Store" "https://itunes.apple.com/us/app/xcode/id497799835"
+      exit 1
+
+      if sw_vers | grep "ProductVersion" | grep "10.14" &> "/dev/null"
+      then
+      echo "Installing macOS development headers..."
+        local headers_pkg="/Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg"
+        installer -pkg "$headers_pkg" -target "/"
+      fi
+    fi
   fi
-  return $?
 }
+
 
 latest_ruby() {
   rbenv install --list | awk '{print $1}' | grep "^[0-9].[0-9]" | grep -v "-" | tail -n1
   return $?
 }
 
+
 install_gems() {
   rbenv install --skip-existing $(latest_ruby)
   rbenv global $(latest_ruby)
 
-  if ! grep "rbenv init -" $HOME/.bash_profile &> /dev/null
+  if ! grep "rbenv init -" $HOME/.bash_profile &> "/dev/null"
   then
     echo 'eval "$(rbenv init -)"' >> $HOME/.bash_profile
     eval "$(rbenv init -)"
@@ -169,7 +213,7 @@ install_gems() {
 
   for gem in "${gems[@]}"
   do
-    if ! gem list | grep "${gem}" &> /dev/null
+    if ! gem list | grep "${gem}" &> "/dev/null"
     then
       gem install "${gem}" --no-document
     fi
@@ -178,17 +222,24 @@ install_gems() {
   return $?
 }
 
+
 setup_git_duet() {
-  curl --silent "https://raw.githubusercontent.com/smartb-energy/workstation/master/.git-authors" > "$HOME/.git-authors"
+  curl \
+    --silent \
+    "https://raw.githubusercontent.com/smartb-energy/workstation/master/.git-authors?a=$(date +%s)" \
+    > "$HOME/.git-authors"
   return $?
 }
+
 
 setup_git_aliases() {
   git config --global alias.co checkout
   git config --global alias.br branch
   git config --global alias.ci commit
   git config --global alias.st status
+  return $?
 }
+
 
 create_ssh_key() {
   if ! ls "$HOME/.ssh/id_rsa" &> /dev/null
@@ -203,34 +254,35 @@ create_ssh_key() {
 
   eval $(ssh-agent)
 
-  if ! grep 'eval $(ssh-agent)' $HOME/.bash_profile &> /dev/null
+  if ! grep 'eval $(ssh-agent)' "$HOME/.bash_profile" &> /dev/null
   then
     echo '
 if ! pgrep "ssh-agent" &> "/dev/null"
 then
   eval $(ssh-agent)
 fi
-' >> $HOME/.bash_profile
-    source $HOME/.bash_profile
+' >> "$HOME/.bash_profile"
+    source "$HOME/.bash_profile"
   fi
 
-  if ! ssh-add -L | grep ssh-rsa &> /dev/null
+  if ! ssh-add -L | grep ssh-rsa &> "/dev/null"
   then
     ssh-add -K "$HOME/.ssh/id_rsa"
     echo "Adding the key to the agent"
   fi
 
-  if ! grep "ssh-add -K" $HOME/.bash_profile &> /dev/null
+  if ! grep "ssh-add -K" "$HOME/.bash_profile" &> "/dev/null"
   then
-    echo 'ssh-add -K "$HOME/.ssh/id_rsa"' >> $HOME/.bash_profile
-    source $HOME/.bash_profile
+    echo 'ssh-add -K "$HOME/.ssh/id_rsa"' >> "$HOME/.bash_profile"
+    source "$HOME/.bash_profile"
   fi
 
   return $?
 }
 
+
 create_habitat_token() {
-  if ! grep token "$HOME/.hab/etc/cli.toml" &> /dev/null
+  if ! grep token "$HOME/.hab/etc/cli.toml" &> "/dev/null"
   then
     echo "Set up your local Habitat environment by running"
     echo "  hab cli setup"
@@ -239,15 +291,58 @@ create_habitat_token() {
   return $?
 }
 
+
 configure_pyenv() {
-  if ! grep "pyenv init -" $HOME/.bash_profile &> /dev/null
+  if ! grep "pyenv init -" "$HOME/.bash_profile" &> "/dev/null"
   then
     echo '
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
-' >> $HOME/.bash_profile
+' >> "$HOME/.bash_profile"
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
+  fi
+  return $?
+}
+
+configure_linux_brew() {
+  if is_ubuntu
+  then
+    sudo apt-get install "build-essential"
+
+    if ! grep "/home/linuxbrew/.linuxbrew/bin/brew" "$HOME/.bash_profile" &> "/dev/null"
+    then
+      echo '
+eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+' >> "$HOME/.bash_profile"
+      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    fi
+
+    if ! grep "/home/linuxbrew/.linuxbrew/bin/brew" "$HOME/.bash_profile" | grep "PATH=" &> "/dev/null"
+    then
+      echo '
+PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+' >> "$HOME/.bash_profile"
+      export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+    fi
+  fi
+  return $?
+}
+
+install_kubectl() {
+  if is_ubuntu
+  then
+    local kernel="linux"
+  elif is_macos
+  then
+    local kernel="darwin"
+  fi
+
+  if ! type kubectl &> "/dev/null"
+  then
+  curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/$kernel/amd64/kubectl"
+  echo "Installing kubectl:"
+    sudo install -m 755 "kubectl" "/usr/local/bin/kubectl"
   fi
   return $?
 }
