@@ -39,7 +39,6 @@ brew_taps=(
 
 brew_casks=(
   atom
-  docker
   iterm2
   postman
   pycharm-ce
@@ -65,7 +64,7 @@ main() {
   install_brew_casks
   setup_git_duet
   setup_git_aliases
-  start_docker
+  #start_docker
   install_xcode
   install_gems
   install_kubectl
