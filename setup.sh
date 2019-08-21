@@ -13,6 +13,7 @@ brew_packages=(
   hab
   hub
   jq
+  kubectl
   nmap
   npm
   pyenv
@@ -328,23 +329,6 @@ PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
   return $?
 }
 
-install_kubectl() {
-  if is_ubuntu
-  then
-    local kernel="linux"
-  elif is_macos
-  then
-    local kernel="darwin"
-  fi
-
-  if ! type kubectl &> "/dev/null"
-  then
-  curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/$kernel/amd64/kubectl"
-  echo "Installing kubectl:"
-    sudo install -m 755 "kubectl" "/usr/local/bin/kubectl"
-  fi
-  return $?
-}
 
 main
 
