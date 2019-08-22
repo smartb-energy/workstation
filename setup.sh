@@ -67,13 +67,8 @@ main() {
   install_brew_casks
   setup_git_duet
   setup_git_aliases
-  #start_docker
   install_xcode
   install_gems
-  install_kubectl
-  # create_ssh_key
-  # create_habitat_token
-  # configure_pyenv
   return $?
 }
 
