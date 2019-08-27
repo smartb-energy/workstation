@@ -8,6 +8,7 @@ gems=(
 brew_packages=(
   awscli
   aws-iam-authenticator
+  coreutils
   direnv
   gcc
   git-duet
