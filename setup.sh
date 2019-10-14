@@ -12,6 +12,7 @@ brew_packages=(
   direnv
   gcc
   git-duet
+  git-lfs
   hab
   hub
   jq
