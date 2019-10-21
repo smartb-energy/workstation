@@ -43,7 +43,7 @@ brew_taps=(
 
 brew_casks=(
   atom
-  chefdk
+  chef-workstation
   iterm2
   postman
   pycharm-ce
