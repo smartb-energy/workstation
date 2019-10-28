@@ -50,6 +50,7 @@ brew_casks=(
   slack
   spectacle
   visual-studio-code
+  google-cloud-sdk
 )
 
 atom_packages=(
